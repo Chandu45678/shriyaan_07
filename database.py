@@ -60,7 +60,32 @@ print("Added Rule to block:", ip)
 rule = "netsh advfirewall firewall add rule name='BadIP' Dir=Out Action=Block RemoteIP=" + ip 
 subprocess.run(["PowerShell", "-Command", rule]) 
 
+// correct firewall.py file code
+no errors //
+import requests, csv, subprocess
 
+# source: Abuse CH
+response = requests.get(
+    "https://feodotracker.abuse.ch/downloads/ipblocklist.csv"
+).text
+
+rule = 'netsh advfirewall firewall delete rule name="BadIP"'
+subprocess.run(["PowerShell", "-Command", rule])
+
+mycsv = csv.reader(
+    filter(lambda x: not x.startswith("#"), response.splitlines())
+)
+
+for row in mycsv:
+    ip = row[1]
+    if ip != "dst_ip":
+        print("Added Rule to block:", ip)
+        rule = "netsh advfirewall firewall add rule name='BadIP' Dir=Out Action=Block RemoteIP=" + ip
+        subprocess.run(["PowerShell", "-Command", rule])
+        rule = "netsh advfirewall firewall add rule name='BadIP' Dir=Out Action=Block RemoteIP=" + ip         
+        subprocess.run(["PowerShell", "-Command", rule])
+
+// correct code
 Execution Steps: 
 1. Open Command Prompt and select Run as Administrator. 
 (Firewall rules require admin rights.) 
